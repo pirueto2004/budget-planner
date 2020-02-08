@@ -45,14 +45,39 @@ var budgetController = (function() {
 
 //UI CONTROLLER
 var UIController = (function() {
-    //some code later
+    var DOMstrings = {
+        inputType : '.add__type',
+        inputDescription : '.add__description',
+        inputValue : '.add__value',
+        inputAddBtn : '.add__btn'
+    };
+
+    return {
+        getInput: function() {
+            //return an object containing all of the three input values
+            return {
+                type : document.querySelector(DOMstrings.inputType).value,
+                description : document.querySelector(DOMstrings.inputDescription).value,
+                value : document.querySelector(DOMstrings.inputValue).value
+            }
+        },
+        //Exposing the DOMstrings into the public
+        getDOMstrings : function() {
+            return DOMstrings;
+        }
+    };
 })();
 
 //APP CONTROLLER
 var appController = (function(budgetCtrl, UICtrl) {
 
+    //import the DOMstrings from UIController
+    var DOM = UICtrl.getDOMstrings();
+
     var ctrlAddItem = function() {
         //1. Get the field input data
+        var input = UICtrl.getInput();
+        console.log(input);
         //2. Add the item to the budget controller
         //3. Add the new item to the UI
         //4. Calculate the budget
@@ -60,7 +85,7 @@ var appController = (function(budgetCtrl, UICtrl) {
         console.log('It works');
     }
     //Setup the event listener
-    document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
+    document.querySelector(DOM.inputAddBtn).addEventListener('click', ctrlAddItem);
 
 //Add the 'keypress' event listener to the global document
 
