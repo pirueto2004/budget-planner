@@ -44,6 +44,7 @@ var budgetController = (function() {
         this.description = description;
         this.value = value;
     };
+
     //Function Constructor for Income
     var Income = function(id, description, value) {
         this.id = id;
@@ -118,7 +119,7 @@ var UIController = (function() {
             return {
                 type : document.querySelector(DOMstrings.inputType).value,
                 description : document.querySelector(DOMstrings.inputDescription).value,
-                value : document.querySelector(DOMstrings.inputValue).value
+                value : parseFloat(document.querySelector(DOMstrings.inputValue).value) //convert value from String to a Decimal number using parseFloat()
             }
         },
 
@@ -169,7 +170,7 @@ var UIController = (function() {
     };
 })();
 
-//APP CONTROLLER
+//GLOBAL APP CONTROLLER
 var appController = (function(budgetCtrl, UICtrl) {
 
     var setUpEventListeners = function() {
@@ -188,7 +189,17 @@ var appController = (function(budgetCtrl, UICtrl) {
             ctrlAddItem();
             }
         });
-    }
+    };
+
+    var updateBudget = function() {
+        //1. Calculate the budget
+
+        //2. Return the budget
+
+        //3. Display the budget on the UI
+
+           
+    };
 
     var ctrlAddItem = function() {
         //variable declaration
@@ -198,19 +209,21 @@ var appController = (function(budgetCtrl, UICtrl) {
         input = UICtrl.getInput();
             // console.log(input);
 
-        //2. Add the item to the budget controller
-        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+        //Prevent false inputs
+        if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+            //2. Add the item to the budget controller
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-        //3. Add the new item to the UI
-        UICtrl.addListItem(newItem, input.type);
+            //3. Add the new item to the UI
+            UICtrl.addListItem(newItem, input.type);
 
-        //4. Clear the fields
-        UICtrl.clearFields();
+            //4. Clear the fields
+            UICtrl.clearFields();
 
-        //5. Calculate the budget
-        //6. Display the budget on the UI
-            // console.log('It works');
-    }
+            //5. Calculate and update the budget
+            updateBudget();
+        }
+    };
     
     //public object to return
     return {
