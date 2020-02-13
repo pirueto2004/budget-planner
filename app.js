@@ -106,6 +106,24 @@ var budgetController = (function() {
             return newItem;
         },
 
+        deleteItem: function(type, id) {
+            var ids, index;
+            //map() loops over an array but returns a brand new array
+            ids = data.allItems[type].map(function(current, index, array) {
+                return current.id;
+            });
+
+            index = ids.indexOf(id);
+
+            //Delete item only if index exists
+
+            if (index !== -1) {
+
+                //Remove 1 element starting at position 'index' 
+                data.allItems[type].splice(index, 1);
+            }
+        },
+
         calculateBudget: function() {
             //Calculate total income and expenses
             calculateTotal('exp');
@@ -160,13 +178,15 @@ var UIController = (function() {
             return {
                 type : document.querySelector(DOMstrings.inputType).value,
                 description : document.querySelector(DOMstrings.inputDescription).value,
-                value : parseFloat(document.querySelector(DOMstrings.inputValue).value) //convert value from String to a Decimal number using parseFloat()
+                value : parseFloat(document.querySelector(DOMstrings.inputValue).value), //convert value from String to a Decimal number using parseFloat()
             }
         },
 
         addListItem: function(obj, type) {
             var html, newHtml, element;
             //Create HTML string with placeholder text
+
+            
 
             if (type === 'inc') {
                 element = DOMstrings.incomeContainer;
@@ -259,7 +279,7 @@ var appController = (function(budgetCtrl, UICtrl) {
         //3. Display the budget on the UI
         // console.log(budget);
         UICtrl.displayBudget(budget);
-           
+
     };
 
     var ctrlAddItem = function() {
@@ -269,7 +289,7 @@ var appController = (function(budgetCtrl, UICtrl) {
         //1. Get the field input data
         input = UICtrl.getInput();
             // console.log(input);
-
+        
         //Prevent false inputs
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
             //2. Add the item to the budget controller
@@ -288,9 +308,20 @@ var appController = (function(budgetCtrl, UICtrl) {
 
     //We use the event object to get the target element where the event was fired
     var ctrlDeleteItem = function(event) {
-        var itemID;
+        var itemID, splitID, type, ID;
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
         console.log(itemID);
+        //inc-1 or exp-1   
+        splitID = itemID.split('-'); //This splits 'inc-1' into 'inc' '1'
+        type = splitID[0];
+        ID = parseInt(splitID[1]);
+
+        //1.Delete the item from the data structure
+        budgetCtrl.deleteItem(type, ID);
+
+        //2. Delete the item from the UI
+
+        //3. Update and show the new budget
     };
     
     //public object to return
