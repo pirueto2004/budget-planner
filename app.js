@@ -207,6 +207,11 @@ var UIController = (function() {
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
         },
 
+        deleteListItem: function(selectorID) {
+            var elem = document.getElementById(selectorID);
+            elem.parentNode.removeChild(elem);
+        },
+
         clearFields : function() {
             var fields, fieldsArray;
             //fields will be a list of all the elements selected
@@ -310,18 +315,24 @@ var appController = (function(budgetCtrl, UICtrl) {
     var ctrlDeleteItem = function(event) {
         var itemID, splitID, type, ID;
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
-        console.log(itemID);
-        //inc-1 or exp-1   
-        splitID = itemID.split('-'); //This splits 'inc-1' into 'inc' '1'
-        type = splitID[0];
-        ID = parseInt(splitID[1]);
 
-        //1.Delete the item from the data structure
-        budgetCtrl.deleteItem(type, ID);
+        if (itemID) {
+            // console.log(itemID);
+            //inc-1 or exp-1   
+            splitID = itemID.split('-'); //This splits 'inc-1' into 'inc' '1'
+            type = splitID[0];
+            ID = parseInt(splitID[1]);
 
-        //2. Delete the item from the UI
+            //1.Delete the item from the data structure
+            budgetCtrl.deleteItem(type, ID);
 
-        //3. Update and show the new budget
+            //2. Delete the item from the UI
+            UICtrl.deleteListItem(itemID);
+
+            //3. Update and show the new budget
+            updateBudget();
+        }
+        
     };
     
     //public object to return
